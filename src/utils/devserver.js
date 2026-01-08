@@ -68,25 +68,22 @@ createServer({
 
     routes() {
 
-        this.urlPrefix = 'https://kiwitter-node-77f5acb427c1.herokuapp.com/';
+        this.urlPrefix = 'https://uppro-0825.workintech.com.tr/';
 
         this.post("/login", () => {
 
+            const { nickname } = JSON.parse(request.requestBody);
+
             return {
                 token: "token123",
-                username: "deniz_acay",
-                name: "Deniz Acay"
+                username: nickname,
             }
             // return new Response(401);
         });
 
-        this.post("/users/signup", () => {
+        this.post("/signup", (schema, request) => {
 
-            return {
-                token: "token123",
-                username: "deniz_acay",
-                name: "Deniz Acay"
-            }
+            return {};
         })
 
         this.get("/twits", () => {

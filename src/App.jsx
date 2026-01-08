@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import PageLayout from "./layouts/PageLayout.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import { ToastContainer } from 'react-toastify';
 
 import './utils/devserver.js';
 
@@ -28,6 +29,7 @@ function App() {
           <PageLayout>Twit detail</PageLayout>
         </Route>
       </Switch>
+      <ToastContainer />
     </div>
   );
 }
