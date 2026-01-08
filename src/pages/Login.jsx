@@ -3,8 +3,8 @@ import AuthLayout from "../layouts/AuthLayout.jsx";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
-import { setAuthToken } from "../utils/auth.js";
 import { useHistory } from "react-router-dom";
+import useAuth from "../hooks/useAuth.jsx";
 
 import axios from "../utils/axios.js";
 
@@ -21,6 +21,8 @@ export default function Login() {
     mode: "onChange",
   });
 
+  const { login } = useAuth();
+
   const history = useHistory();
 
   function handleLogin(data) {
@@ -29,7 +31,7 @@ export default function Login() {
       .post("/login", data)
       .then(resp => {
 
-        setAuthToken(resp.data.token);
+        login(resp.data.token);
 
         toast.success("Giriş başarılı");
 
