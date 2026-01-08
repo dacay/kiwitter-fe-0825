@@ -70,7 +70,7 @@ createServer({
 
         this.urlPrefix = 'https://uppro-0825.workintech.com.tr/';
 
-        this.post("/login", () => {
+        this.post("/login", (schema, request) => {
 
             const { nickname } = JSON.parse(request.requestBody);
 
@@ -81,7 +81,7 @@ createServer({
             // return new Response(401);
         });
 
-        this.post("/signup", (schema, request) => {
+        this.post("/signup", () => {
 
             return {};
         })

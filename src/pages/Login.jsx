@@ -2,6 +2,11 @@ import queryString from "query-string";
 import AuthLayout from "../layouts/AuthLayout.jsx";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from 'react-toastify';
+import { setAuthToken } from "../utils/auth.js";
+import { useHistory } from "react-router-dom";
+
+import axios from "../utils/axios.js";
 
 export default function Login() {
   const { search } = useLocation();
@@ -16,8 +21,27 @@ export default function Login() {
     mode: "onChange",
   });
 
+  const history = useHistory();
+
   function handleLogin(data) {
-    console.log(data, "---");
+
+    axios
+      .post("/login", data)
+      .then(resp => {
+
+        setAuthToken(resp.data.token);
+
+        toast.success("Giriş başarılı");
+
+        setTimeout(() => {
+          history.push("/");
+        }, 2000);
+      })
+      .catch(error => {
+        console.log(error);
+
+        toast.error("Giriş başarısız");
+      });
   }
 
   return (
