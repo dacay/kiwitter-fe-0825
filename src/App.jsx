@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { getAuthToken } from "./utils/auth.js";
 import { setToken } from "./utils/axios.js";
-import { Provider, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { login } from './userSlice.js';
 
 import PageLayout from "./layouts/PageLayout.jsx";
@@ -17,15 +17,26 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
 
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
+
+    setIsLoading(true);
+
     const token = getAuthToken();
     console.log(token);
     if (token) {
       dispatch(login(token));
+      setToken(token);
     }
+
+    setIsLoading(false);
   }, []);
+
+  if (isLoading) {
+    return <div className="text-center text-2xl font-bold">Yükleniyor...</div>;
+  }
 
   return (
     <div>

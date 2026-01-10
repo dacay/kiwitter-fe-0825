@@ -56,13 +56,12 @@ function generateObjects(n) {
             "name": author.name,
             "username": author.username
         });
-        twitLikes[i+1] = like;
     }
-    
+
     return objects;
 }
 
-const twitLikes = {
+const twitsLikedByUser = {
 
 }
 
@@ -92,10 +91,26 @@ createServer({
             return {};
         })
 
-        this.get("/twits", () => {
+        this.get("/twits", (schema, request) => {
 
-            return {
-                twits
+            const token = request.requestHeaders['Authorization'];
+
+            if (token) {
+
+                const decoded = jwtDecode(token);
+                const { sub: userId } = decoded;
+
+                return {
+                    twits: twits.map(twit => ({
+                        ...twit,
+                        likedByUser: twitsLikedByUser[userId] && twitsLikedByUser[userId].includes(twit.id) ? true : false
+                    }))
+                }
+            } else {
+
+                return {
+                    twits
+                }
             }
         })
 
@@ -105,6 +120,7 @@ createServer({
             const token = request.requestHeaders['Authorization'];
 
             const decoded = jwtDecode(token);
+            const { sub: userId } = decoded;
 
             const newTwit = {
                 "id": window.crypto.randomUUID(),
@@ -115,7 +131,7 @@ createServer({
                 "likes": 0,
                 "replies": 0,
                 "name": decoded.name,
-                "username": decoded.nickname
+                "username": decoded.nickname,
             }
 
             twits.push(newTwit);
@@ -127,19 +143,50 @@ createServer({
 
         this.post("/twits/:twitId/like", (schema, request) => {
 
-            const { twitId } = request.params; 
+            const { twitId } = request.params;
+            const token = request.requestHeaders['Authorization'];
 
-            if (twitLikes[twitId]) {
+            const { sub: userId } = jwtDecode(token);
 
-                twitLikes[twitId]++;
+            const twit = twits.find(twit => twit.id === twitId);
+
+            if (twitsLikedByUser[userId]) {
+
+                twitsLikedByUser[userId].push(twitId);
 
             } else {
-                
-                twitLikes[twitId] = 1;
+
+                twitsLikedByUser[userId] = [twitId];
             }
 
+            twit.likes++;
+
             return {
-                count: twitLikes[twitId]
+                count: twit.likes
+            }
+        });
+
+        this.delete("/twits/:twitId/like", (schema, request) => {
+
+            const { twitId } = request.params;
+            const token = request.requestHeaders['Authorization'];
+
+            const { sub: userId } = jwtDecode(token);
+
+            const twit = twits.find(twit => twit.id === twitId);
+
+            if (!twitsLikedByUser[userId]) {
+
+                return new Response(200);
+            }
+
+            twitsLikedByUser[userId] = twitsLikedByUser[userId].filter(id => id !== twitId);
+
+            twit.likes--;
+
+            return {
+                count: twit.likes,
+                likedByUser: false
             }
         });
     },

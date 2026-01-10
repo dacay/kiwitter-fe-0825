@@ -16,11 +16,33 @@ const twitsSlice = createSlice({
 
       state.twits = twits.sort((a, b) => b.createDate - a.createDate);
     },
+    likeTwit: (state, action) => {
+
+      const { id } = action.payload;
+
+      const twit = state.twits.find(twit => twit.id === id);
+
+      if (twit) {
+        twit.likes++;
+        twit.likedByUser = true;
+      }
+    },
+    unlikeTwit: (state, action) => {
+
+      const { id } = action.payload;
+
+      const twit = state.twits.find(twit => twit.id === id);
+
+      if (twit) {
+        twit.likes--;
+        twit.likedByUser = false;
+      }
+    }
   },
 });
 
 export const selectTwits = (state) => state.twits.twits;
 
-export const { loadTwits, addTwit } = twitsSlice.actions;
+export const { loadTwits, addTwit, likeTwit, unlikeTwit } = twitsSlice.actions;
 
 export default twitsSlice.reducer;
