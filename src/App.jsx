@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 
 import './utils/devserver.js';
 import "./App.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
   return (

@@ -12,7 +12,10 @@ export default function Post({ post }) {
       <div className="text-gray-700">
         {post.content}
       </div>
-      <div>
+      <div className="flex flex-row gap-2">
+        <i className="bi bi-suit-heart cursor-pointer hover:text-primary"></i> {post.likes} &nbsp;
+        <i className="bi bi-arrow-repeat cursor-pointer hover:text-primary"></i> {post.retweets} &nbsp;
+        <i className="bi bi-chat cursor-pointer hover:text-primary"></i> {post.replies} &nbsp;
       </div>
     </div>
   </div>

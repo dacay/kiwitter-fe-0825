@@ -43,14 +43,15 @@ function generateObjects(n) {
     const objects = [];
     for (let i = 0; i < n; i++) {
         const author = generateRandomAuthors();
-        const like = Math.floor(Math.random() * 100);
+        const like = Math.floor(Math.random() * 30);
         objects.push({
             "id": i + 1,
             "authorId": author.id,
+            "retweets": Math.floor(Math.random() * 10),
             "content": generateRandomContent(),
             "createDate": generateRandomDate(),
             "likes": like,
-            "replies": Math.floor(Math.random() * 100),
+            "replies": Math.floor(Math.random() * 20),
             "name": author.name,
             "username": author.username
         });
