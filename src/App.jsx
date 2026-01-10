@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
+import { getAuthToken } from "./utils/auth.js";
+import { setToken } from "./utils/axios.js";
 
 import PageLayout from "./layouts/PageLayout.jsx";
 import Login from "./pages/Login.jsx";
@@ -11,6 +14,14 @@ import "./App.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      setToken(token);
+    }
+  }, []);
+
   return (
     <div>
       <Switch>

@@ -1,4 +1,5 @@
 import { createServer, Response } from "miragejs"
+import { jwtDecode } from "jwt-decode";
 
 function generateRandomDate() {
     const start = new Date(2025, 0, 1); // Start date: Jan 1, 2025
@@ -45,7 +46,7 @@ function generateObjects(n) {
         const author = generateRandomAuthors();
         const like = Math.floor(Math.random() * 30);
         objects.push({
-            "id": i + 1,
+            "id": window.crypto.randomUUID(),
             "authorId": author.id,
             "retweets": Math.floor(Math.random() * 10),
             "content": generateRandomContent(),
@@ -65,6 +66,10 @@ const twitLikes = {
 
 }
 
+const twits = [
+    ...generateObjects(100)
+];
+
 createServer({
 
     routes() {
@@ -76,7 +81,7 @@ createServer({
             const { nickname } = JSON.parse(request.requestBody);
 
             return {
-                token: "token123",
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDAwIiwibmFtZSI6IkRlbml6IEFjYXkiLCJuaWNrbmFtZSI6ImRhY2F5IiwiaWF0IjoxNTE2MjM5MDIyfQ.PIHhOqu6GNcStitQ70xfKU9ffDUtjj7Blkhu8RjfUzw",
                 username: nickname,
             }
             // return new Response(401);
@@ -90,15 +95,33 @@ createServer({
         this.get("/twits", () => {
 
             return {
-                twits: generateObjects(100)
+                twits
             }
         })
 
-        this.post("/twits", () => {
+        this.post("/twits", (schema, request) => {
+
+            const { content } = JSON.parse(request.requestBody);
+            const token = request.requestHeaders['Authorization'];
+
+            const decoded = jwtDecode(token);
+
+            const newTwit = {
+                "id": window.crypto.randomUUID(),
+                "authorId": 1000,
+                "retweets": 0,
+                "content": content,
+                "createDate": Date.now(),
+                "likes": 0,
+                "replies": 0,
+                "name": decoded.name,
+                "username": decoded.nickname
+            }
+
+            twits.push(newTwit);
 
             return {
-                id: window.crypto.randomUUID(),
-                createDate: Date.now()
+                twit: newTwit
             }
         });
 

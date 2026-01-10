@@ -40,8 +40,12 @@ export default function Home() {
 
   }, []);
 
+  const addPost = (post) => {
+    setPosts([post, ...posts]);
+  }
+
   return <PageLayout className="">
-    {isLoggedIn && <PostEditor />}
+    {isLoggedIn && <PostEditor addPost={addPost} />}
     <Timeline posts={posts} isLoading={isLoading} isSuccess={isSuccess} />
   </PageLayout>;
 }
