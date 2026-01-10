@@ -12,7 +12,9 @@ export default function Timeline({ posts, isLoading, isSuccess }) {
     return <span>Bir şeyler ters gitti</span>
   }
 
-  const postItems = posts.map(post => <Post key={post.id} post={post} />)
+  const postItems = posts
+    .sort((a, b) => b.createDate - a.createDate)
+    .map(post => <Post key={post.id} post={post} />)
 
   return <div className="flex flex-col gap-6">
     {postItems}
