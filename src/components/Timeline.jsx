@@ -16,6 +16,8 @@ export default function Timeline({ posts, isLoading, isSuccess }) {
     .map(post => <Post key={post.id} post={post} />)
 
   return <div className="flex flex-col gap-6">
-    {postItems}
+    <div className="flex flex-col gap-6">
+      {postItems}
+    </div>
   </div>;
 }

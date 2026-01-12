@@ -41,7 +41,16 @@ const twitsSlice = createSlice({
   },
 });
 
-export const selectTwits = (state) => state.twits.twits;
+export const selectTwits = (mode) => (state) => mode === "normal" ? state.twits.twits : [...state.twits.twits].sort((a, b) => b.likes - a.likes);
+
+// Ayni anlama gelir
+// function selectTwits(mode) {
+
+//   return function(state) {
+
+//     return mode === "normal" ? state.twits.twits : [...state.twits.twits].sort((a, b) => b.likes - a.likes);
+//   }
+// }
 
 export const { loadTwits, addTwit, likeTwit, unlikeTwit } = twitsSlice.actions;
 
