@@ -40,7 +40,7 @@ function generateRandomContent() {
     return contents[Math.floor(Math.random() * contents.length)];
 }
 
-function generateObjects(n) {
+function generateObjects(n, fillReplies = false) {
     const objects = [];
     for (let i = 0; i < n; i++) {
         const author = generateRandomAuthors();
@@ -52,7 +52,7 @@ function generateObjects(n) {
             "content": generateRandomContent(),
             "createDate": generateRandomDate(),
             "likes": like,
-            "replies": Math.floor(Math.random() * 20),
+            "replies": fillReplies ? generateObjects(3, false) : [],
             "name": author.name,
             "username": author.username
         });
@@ -66,8 +66,10 @@ const twitsLikedByUser = {
 }
 
 const twits = [
-    ...generateObjects(100)
+    ...generateObjects(100, true)
 ];
+
+console.log("twits backend", twits);
 
 createServer({
 
@@ -129,7 +131,7 @@ createServer({
                 "content": content,
                 "createDate": Date.now(),
                 "likes": 0,
-                "replies": 0,
+                "replies": [],
                 "name": decoded.name,
                 "username": decoded.nickname,
             }

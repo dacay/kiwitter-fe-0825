@@ -1,14 +1,18 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { likeTwit, unlikeTwit } from '../twitsSlice.js';
 import axios from '../utils/axios.js';
 
-export default function Post({ post }) {
+import Replies from './Replies.jsx';
+
+export default function Post({ post, isReply = false, className = "" }) {
 
   const dispatch = useDispatch();
   const date = dayjs(post.createDate).fromNow();
+  const [isRepliesVisible, setIsRepliesVisible] = useState(false);
 
   const handleLike = (e) => {
 
@@ -39,26 +43,34 @@ export default function Post({ post }) {
       });
   }
 
+  const handleRepliesVisibilityToggle = (e) => {
+    e.preventDefault();
+    setIsRepliesVisible(!isRepliesVisible);
+  }
+
   const iconClass = post.likedByUser ? "bi bi-suit-heart-fill cursor-pointer hover:text-primary text-primary" : "bi bi-suit-heart cursor-pointer hover:text-primary text-gray-400";
 
-  return <div className="flex flex-row container mx-auto bg-white w-[40vw] rounded-xl shadow-xl p-4 gap-6">
-    <div className="flex flex-col justify-start w-24">
-      <img src={`https://i.pravatar.cc/150?u=${post.authorId}`} alt={post.name} className="w-full rounded-full aspect-square" />
+  return <div>
+    <div className={`flex flex-row container mx-auto bg-white w-[40vw] rounded-xl ${isRepliesVisible ? "rounded-b-none" : ""} shadow-xl p-4 gap-6 ${className}`}>
+      <div className="flex flex-col justify-start w-24">
+        <img src={`https://i.pravatar.cc/150?u=${post.authorId}`} alt={post.name} className="w-full rounded-full aspect-square" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <div>
+          <span className="font-bold text-primary text-sm">{post.name}</span>&nbsp;
+          <span className="text-sm text-gray-400 italic">({post.username})</span>
+        </div>
+        <div className="text-gray-700">
+          {post.content}
+        </div>
+        <div className="text-gray-400 text-sm">{date}</div>
+        {!isReply && <div className="flex flex-row gap-2">
+          <a href="#" onClick={post.likedByUser ? handleUnlike : handleLike}><i className={iconClass}></i> <span className="text-gray-400">{post.likes}</span> &nbsp;</a>
+          <i className="bi bi-arrow-repeat cursor-pointer hover:text-primary text-gray-400"></i> <span className="text-gray-400">{post.retweets}</span> &nbsp;
+          <i onClick={handleRepliesVisibilityToggle} className="bi bi-chat cursor-pointer hover:text-primary text-gray-400"></i> <span className="text-gray-400">{post.replies.length}</span>
+        </div>}
+      </div>
     </div>
-    <div className="flex flex-col gap-2">
-      <div>
-        <span className="font-bold text-primary text-sm">{post.name}</span>&nbsp;
-        <span className="text-sm text-gray-400 italic">({post.username})</span>
-      </div>
-      <div className="text-gray-700">
-        {post.content}
-      </div>
-      <div className="text-gray-400 text-sm">{date}</div>
-      <div className="flex flex-row gap-2">
-        <a href="#" onClick={post.likedByUser ? handleUnlike : handleLike}><i className={iconClass}></i> <span className="text-gray-400">{post.likes}</span> &nbsp;</a>
-        <i className="bi bi-arrow-repeat cursor-pointer hover:text-primary text-gray-400"></i> <span className="text-gray-400">{post.retweets}</span> &nbsp;
-        <i className="bi bi-chat cursor-pointer hover:text-primary text-gray-400"></i> <span className="text-gray-400">{post.replies}</span> &nbsp;
-      </div>
-    </div>
+    {isRepliesVisible && <Replies parentPost={post} replies={post.replies} />}
   </div>
 }

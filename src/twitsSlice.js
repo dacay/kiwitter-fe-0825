@@ -27,6 +27,17 @@ const twitsSlice = createSlice({
         twit.likedByUser = true;
       }
     },
+    replyToTwit: (state, action) => {
+
+      const { replyTo, reply } = action.payload;
+
+      const twit = state.twits.find(twit => twit.id === replyTo);
+
+      if (twit) {
+
+        twit.replies.push(reply);
+      }
+    },
     unlikeTwit: (state, action) => {
 
       const { id } = action.payload;
@@ -52,6 +63,6 @@ export const selectTwits = (mode) => (state) => mode === "normal" ? state.twits.
 //   }
 // }
 
-export const { loadTwits, addTwit, likeTwit, unlikeTwit } = twitsSlice.actions;
+export const { loadTwits, addTwit, likeTwit, unlikeTwit, replyToTwit } = twitsSlice.actions;
 
 export default twitsSlice.reducer;
