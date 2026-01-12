@@ -8,19 +8,21 @@ function generateRandomDate() {
     return randomDate.getTime()
 }
 
+const authors = [
+    { id: 1, name: "Ahmet Yılmaz", username: "chaotic_orange" },
+    { id: 2, name: "Ayşe Demir", username: "sunny_rose" },
+    { id: 3, name: "Murat Kaya", username: "blue_hawk" },
+    { id: 4, name: "Fatma Aslan", username: "wild_berry" },
+    { id: 5, name: "Mehmet Can", username: "quiet_storm" },
+    { id: 6, name: "Elif Yılmaz", username: "soft_moon" },
+    { id: 7, name: "Kemal Erdem", username: "green_earth" },
+    { id: 8, name: "Zeynep Şahin", username: "silver_wings" },
+    { id: 9, name: "Ali Vural", username: "golden_dream" },
+    { id: 10, name: "Selin Güler", username: "silent_waves" }
+];
+
 function generateRandomAuthors() {
-    const authors = [
-        { id: 1, name: "Ahmet Yılmaz", username: "chaotic_orange" },
-        { id: 2, name: "Ayşe Demir", username: "sunny_rose" },
-        { id: 3, name: "Murat Kaya", username: "blue_hawk" },
-        { id: 4, name: "Fatma Aslan", username: "wild_berry" },
-        { id: 5, name: "Mehmet Can", username: "quiet_storm" },
-        { id: 6, name: "Elif Yılmaz", username: "soft_moon" },
-        { id: 7, name: "Kemal Erdem", username: "green_earth" },
-        { id: 8, name: "Zeynep Şahin", username: "silver_wings" },
-        { id: 9, name: "Ali Vural", username: "golden_dream" },
-        { id: 10, name: "Selin Güler", username: "silent_waves" }
-    ];
+
     return authors[Math.floor(Math.random() * authors.length)];
 }
 
@@ -190,6 +192,35 @@ createServer({
                 count: twit.likes,
                 likedByUser: false
             }
+        });
+
+        this.get("/users/me", (schema, request) => {
+
+            const token = request.requestHeaders['Authorization'];
+
+            const { sub: id, name, nickname: username } = jwtDecode(token);
+
+            return {
+                id, name, username
+            }
+        });
+
+        this.get("/users/:username", (schema, request) => {
+
+            const { username } = request.params;
+
+            const author = authors.find(author => author.username === username);
+
+            if (author) {
+
+                return {
+                    id: author.id,
+                    name: author.name,
+                    username: author.username
+                }
+            }
+
+            return new Response(404);
         });
     },
 });

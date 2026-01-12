@@ -10,6 +10,7 @@ import PageLayout from "./layouts/PageLayout.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Home from "./pages/Home.jsx";
+import Profile from "./pages/Profile.jsx";
 
 import './utils/devserver.js';
 import "./App.css";
@@ -35,7 +36,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div className="text-center text-2xl font-bold">Yükleniyor...</div>;
+    return <div className="text-center text-2xl font-bold text-white">Yükleniyor...</div>;
   }
 
   return (
@@ -57,6 +58,9 @@ function App() {
           </Route>
           <Route path="/detail/:twitId">
             <PageLayout>Twit detail</PageLayout>
+          </Route>
+          <Route path="/:username">
+            <Profile />
           </Route>
         </Switch>
       <ToastContainer autoClose={2000} />

@@ -59,6 +59,7 @@ const twitsSlice = createSlice({
 });
 
 export const selectTwits = (mode) => (state) => mode === "normal" ? state.twits.twits : [...state.twits.twits].sort((a, b) => b.likes - a.likes);
+export const selectTwitsByUsername = (username) => (state) => state.twits.twits.filter(twit => twit.username === username);
 
 // Ayni anlama gelir
 // function selectTwits(mode) {

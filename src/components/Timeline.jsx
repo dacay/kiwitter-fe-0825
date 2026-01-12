@@ -4,7 +4,7 @@ export default function Timeline({ posts, isLoading, isSuccess }) {
 
   if (isLoading) {
 
-    return <span>Yükleniyor...</span>
+    return <span className="text-white">Yükleniyor...</span>
   }
 
   if (!isSuccess) {
@@ -17,7 +17,7 @@ export default function Timeline({ posts, isLoading, isSuccess }) {
 
   return <div className="flex flex-col gap-6">
     <div className="flex flex-col gap-6">
-      {postItems}
+      {postItems.length > 0 ? postItems : <span className="text-white">Bu kullanıcının twitleri yok</span>}
     </div>
   </div>;
 }

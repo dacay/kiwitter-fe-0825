@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { likeTwit, unlikeTwit, deleteTwit } from '../twitsSlice.js';
 import axios from '../utils/axios.js';
 
@@ -11,6 +12,7 @@ import Replies from './Replies.jsx';
 export default function Post({ post, isReply = false, className = "" }) {
 
   const dispatch = useDispatch();
+  const history = useHistory();
   const date = dayjs(post.createDate).fromNow();
   const [isRepliesVisible, setIsRepliesVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,21 +84,26 @@ export default function Post({ post, isReply = false, className = "" }) {
     };
   }, [isMenuOpen]);
 
+  const handleProfileClick = (e) => {
+
+    history.push(`/${post.username}`);
+  }
+
   const iconClass = post.likedByUser ? "bi bi-suit-heart-fill cursor-pointer hover:text-primary text-primary" : "bi bi-suit-heart cursor-pointer hover:text-primary text-gray-400";
 
   return <div>
     <div className={`flex flex-row container mx-auto bg-white w-[40vw] rounded-xl ${isRepliesVisible ? "rounded-b-none" : ""} shadow-xl p-4 gap-6 ${className}`}>
       <div className="flex flex-col justify-start w-24">
-        <img src={`https://i.pravatar.cc/150?u=${post.authorId}`} alt={post.name} className="w-full rounded-full aspect-square" />
+        <img onClick={handleProfileClick} src={`https://i.pravatar.cc/150?u=${post.authorId}`} alt={post.name} className="w-full rounded-full aspect-square cursor-pointer" />
       </div>
       <div className="flex flex-col gap-2 w-full">
         <div className="flex flex-row justify-between items-center">
-          <div>
-          <span className="font-bold text-primary text-sm">{post.name}</span>&nbsp;
-          <span className="text-sm text-gray-400 italic">({post.username})</span>
+          <div className="cursor-pointer" onClick={handleProfileClick}>
+            <span className="font-bold text-primary text-sm">{post.name}</span>&nbsp;
+            <span className="text-sm text-gray-400 italic">({post.username})</span>
           </div>
           <div className="relative" ref={menuRef}>
-            <i 
+            <i
               className="bi bi-three-dots-vertical cursor-pointer hover:text-primary text-gray-400"
               onClick={handleMenuToggle}
             ></i>
